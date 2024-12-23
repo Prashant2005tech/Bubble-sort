@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bubble Sort Visualization</title>
+    <style>
+         body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .bar-container {
+            display: flex;
+            align-items: flex-end;
+            margin-top: 20px;
+            height: 300px;
+        }
+
+        .bar {
+            width: 30px;
+            margin: 2px;
+            background-color: red;
+            text-align: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .sorted {
+            background-color: green !important;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Bubble Sort Visualization</h1>
+    <div class="input-section">
+        <label for="numElements">Enter number of elements: </label>
+        <input type="number" id="numElements" min="2" value="5">
+        <button onclick="generateInputFields()">Generate Input Fields</button>
+        <div id="inputFields"></div>
+        <button onclick="startBubbleSort()">Start Sorting</button>
+    </div>
+    <div id="barContainer" class="bar-container"></div>
+
+    <script>
+        let numbers = [];
+
+        function generateInputFields() {
+            const numElements = document.getElementById('numElements').value;
+            const inputContainer = document.getElementById('inputFields');
+            inputContainer.innerHTML = '';
+
+            for (let i = 0; i < numElements; i++) {
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.placeholder = `Value ${i + 1}`;
+                input.id = `input${i}`;
+                inputContainer.appendChild(input);
+            }
+        }
+
+        function createBars(arr) {
+            const barContainer = document.getElementById('barContainer');
+            barContainer.innerHTML = '';
+            arr.forEach(value => {
+                const bar = document.createElement('div');
+                bar.classList.add('bar');
+                bar.style.height = `${value * 5}px`;
+                bar.textContent = value;
+                barContainer.appendChild(bar);
+            });
+        }
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        async function bubbleSort(arr) {
+            const bars = document.getElementsByClassName('bar');
+            for (let i = 0; i < arr.length; i++) {
+                for (let j = 0; j < arr.length - i - 1; j++) {
+                    bars[j].style.backgroundColor = 'yellow';
+                    bars[j + 1].style.backgroundColor = 'yellow';
+
+                    await sleep(300);
+
+                    if (arr[j] > arr[j + 1]) {
+                        [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+
+                        bars[j].style.height = `${arr[j] * 10}px`;
+                        bars[j].textContent = arr[j];
+                        bars[j + 1].style.height = `${arr[j + 1] * 10}px`;
+                        bars[j + 1].textContent = arr[j + 1];
+                    }
+
+                    bars[j].style.backgroundColor = 'red';
+                    bars[j + 1].style.backgroundColor = 'red';
+                }
+
+                bars[arr.length - i - 1].style.backgroundColor = 'green';
+            }
+        }
+
+        function startBubbleSort() {
+            const numElements = document.getElementById('numElements').value;
+            numbers = [];
+
+            for (let i = 0; i < numElements; i++) {
+                const value = document.getElementById(`input${i}`).value;
+                if (value) {
+                    numbers.push(parseInt(value));
+                }
+            }
+
+            if (numbers.length ==0 || numbers.some(isNaN)) {
+                alert('Please enter valid numbers.');
+                return;
+            }
+
+            createBars(numbers);
+            bubbleSort(numbers);
+        }
+    </script>
+</body>
+</html>
